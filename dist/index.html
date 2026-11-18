@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#272d53">
+  <title>链谱 · 整数同调计算器</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="homology.js"></script><script defer src="inputs.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <header class="site-head"><div class="shell head-inner">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><b>链谱</b><span>Homology Lab</span></div>
+    <button id="method" class="text-btn">计算方法 <span aria-hidden="true">↗</span></button>
+  </div></header>
+  <main class="shell">
+    <header class="intro"><div><h1>整数同调计算器</h1><p>从两张边界矩阵求出同调群，在原始基底中核对每个生成元。</p></div>
+      <div class="example"><label for="examples">载入算例</label><select id="examples"><option value="klein">克莱因瓶</option><option value="rp2">实射影平面</option><option value="torus">二维环面</option><option value="triangle">实心三角形</option><option value="mixed">混合链复形</option><option value="point">单点</option><option value="custom" disabled>自定义矩阵</option></select></div></header>
+
+    <section class="chain-strip" aria-label="当前链复形">
+      <div class="chain-note"><b>当前链复形</b><span id="example-note"></span></div>
+      <div class="chain" aria-label="相邻的三个整数链群"><span class="math" id="group-p"></span><span class="arrow"><small>B</small>⟶</span><span class="math middle" id="group-n"></span><span class="arrow"><small>A</small>⟶</span><span class="math" id="group-m"></span></div>
+    </section>
+
+    <div class="work-area">
+      <section class="input-panel panel"><div class="section-head"><h2>边界矩阵</h2><span class="quiet">整数系数</span></div>
+        <form id="matrices">
+          <div class="dim-fields"><label>同调次数 <i>k</i><input id="degree" type="number" min="0" max="99" step="1" required></label>
+            <label>行数 <i>m</i><input id="dim-m" type="number" min="0" max="12" step="1" required></label>
+            <label>中间秩 <i>n</i><input id="dim-n" type="number" min="0" max="12" step="1" required></label>
+            <label>列数 <i>p</i><input id="dim-p" type="number" min="0" max="12" step="1" required></label></div>
+          <div class="matrix-field"><div><label for="mat-A"><b>A</b> <span id="map-A">= ∂ₖ</span></label><span id="shape-A" class="shape"></span></div><textarea id="mat-A" rows="2" maxlength="5000" spellcheck="false" wrap="off" aria-describedby="entry-help"></textarea></div>
+          <div class="matrix-field"><div><label for="mat-B"><b>B</b> <span id="map-B">= ∂ₖ₊₁</span></label><span id="shape-B" class="shape"></span></div><textarea id="mat-B" rows="3" maxlength="5000" spellcheck="false" wrap="off" aria-describedby="entry-help"></textarea></div>
+          <p id="entry-help" class="hint">每行对应矩阵的一行，整数用空格或逗号分隔。零行或零列矩阵留空。</p>
+          <div class="form-foot"><button class="primary" id="compute" type="submit">计算同调群 <span aria-hidden="true">→</span></button><small>支持至多 12 × 12</small></div>
+        </form>
+      </section>
+      <section class="result-panel panel" aria-labelledby="result-heading"><div class="section-head"><h2 id="result-heading">计算结果</h2><button class="text-btn export" id="export" disabled>导出文本 ↓</button></div>
+        <div id="live" role="status" aria-live="polite"></div><div id="result"></div>
+      </section>
+    </div>
+    <footer><span>全部计算在当前设备完成</span><a href="https://github.com/Joren0304/integer-homology-lab" target="_blank" rel="noopener noreferrer">GitHub 源码 ↗</a></footer>
+  </main>
+  <dialog id="method-dialog" aria-labelledby="how-title"><div class="dialog-head"><h2 id="how-title">怎样核对计算</h2><button id="close-method" class="text-btn" aria-label="关闭说明">关闭 ×</button></div>
+    <div class="prose"><h3>先检查边界的边界</h3><p>用列向量表示链。A 是 m × n 矩阵，B 是 n × p 矩阵。只有 AB = 0 时，B 的像才包含在 A 的核中，此时 Hₖ = ker A / im B。</p>
+    <h3>在整数上约化</h3><p>用可逆的整数基变换求出 ker A 的整数基，把 B 的列写入这组基，再作 Smith 标准形分解。非单位对角元 d 给出 ℤ/dℤ，自由部分的秩是 n − rank A − rank B。</p>
+    <h3>把生成元代回原矩阵</h3><p>每个给出的代表 z 都满足 Az = 0。对阶为 d 的挠生成元，页面还给出上一级链 w，可验算 Bw = dz。等式证明 d 倍是边界，精确阶数由 Smith 不变量确定。</p>
+    <p><a href="https://doc.sagemath.org/html/en/reference/homology/sage/homology/chain_complex.html" target="_blank" rel="noopener noreferrer">SageMath 链复形参考文档 ↗</a></p></div>
+  </dialog>
+</body></html>
